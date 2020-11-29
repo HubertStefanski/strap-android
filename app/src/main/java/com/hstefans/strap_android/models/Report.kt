@@ -1,14 +1,16 @@
+//@author Hubert Stefanski
+
+
 package org.hstefans.strap.app.models
 
 
-
 class Report(
-        var uid: String,
-        var location: String,
-        var description: String,
-        var damage: String,
-        var resolution: String,
-        var reportee: String
+    var uid: String,
+    var location: String,
+    var description: String,
+    var damage: String,
+    var resolution: String,
+    var reportee: String
 ) {
 
     val uidProperty = uid

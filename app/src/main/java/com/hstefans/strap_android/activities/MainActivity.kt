@@ -1,3 +1,5 @@
+//@author Hubert Stefanski
+
 package com.hstefans.strap_android.activities
 
 import androidx.appcompat.app.AppCompatActivity
