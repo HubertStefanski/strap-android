@@ -1,7 +1,9 @@
 package com.hstefans.strap_android.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -14,26 +16,37 @@ class AuthenticationActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
 
-    lateinit var email: EditText
-    lateinit var password: EditText
+    lateinit var emailText: EditText
+    lateinit var passwordText: EditText
+    lateinit var registerRouteButton: Button
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         auth = FirebaseAuth.getInstance()
         super.onCreate(savedInstanceState)
-        Log.v(TAG, "Starting Logging");
-        setContentView(R.layout.activity_authentication)
-        initView()
 
+//        // Initialize variables
+//        emailText = findViewById(R.id.emailText)
+//        passwordText = findViewById(R.id.passwordText)
+
+
+        Log.v(TAG, "Starting Logging")
+        setContentView(R.layout.activity_authentication)
+
+      findViewById<Button>(R.id.registerRouteButton).setOnClickListener() {
+            val intent1 = Intent(this, registrationActivity::class.java)
+            startActivity(intent1)
+        }
 
 
     }
+
     /**
      * main login handler
      * @return void
      */
-    // TODO implement me
-    fun onLogin(){
+// TODO implement me
+    fun onLogin() {
 //        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, OnCompleteListener { task ->
 //            if(task.isSuccessful) {
 //                Toast.makeText(this, "Successfully Logged In", Toast.LENGTH_LONG).show()
@@ -46,15 +59,15 @@ class AuthenticationActivity : AppCompatActivity() {
 //        })
     }
 
-    /**
-     * initializes the values used by this activity
-     * @return void
-     */
-    fun initView() {
-        email = findViewById(R.id.emailText)
-        password = findViewById(R.id.passwordText)
-
-    }
-
 
 }
+
+
+/**
+ * initializes the values used by this activity
+ * @return void
+ */
+fun initView() {
+
+}
+
