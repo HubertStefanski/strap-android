@@ -3,8 +3,7 @@
 package com.hstefans.strap_android.handlers
 
 import org.abstractj.kalium.crypto.Hash
-import org.abstractj.kalium.encoders.Encoder.HEX
-
+import java.util.*
 
 
 class AuthHandler {
@@ -14,8 +13,18 @@ class AuthHandler {
      * @param str , the string to be hashed
      * @return hashed string in sha512
      */
+
+    //FIXME
     public fun hashString(str: String): String {
-        val hash = Hash()
-        return HEX.encode(hash.sha512(str.toByteArray()))
+        var hash = Hash()
+        return hash.sha256(str.toByteArray()).toString()
+
+    }
+
+    public fun isValidEmail(str: String): Boolean {
+        if ("""^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$""".toRegex().containsMatchIn(str)) {
+            return true
+        }
+        return false
     }
 }
