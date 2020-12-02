@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.hstefans.strap_android.R
 
 
@@ -38,7 +39,12 @@ class AuthenticationActivity : AppCompatActivity() {
             startActivity(intent1)
         }
 
-
+    }
+    override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser: FirebaseUser? = auth.getCurrentUser()
+//        updateUI(currentUser)
     }
 
     /**
