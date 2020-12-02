@@ -37,10 +37,10 @@ class registrationActivity : AppCompatActivity() {
         Log.v(TAG, "Starting Logging");
 
         // Initialize view components
-        email = findViewById(R.id.registerEmailText) as EditText
-        password = findViewById(R.id.registerPasswordText) as EditText
-        confirmPassword = findViewById(R.id.registerConfirmPasswordText) as EditText
-        phoneNo = findViewById(R.id.registerPhoneNoText) as EditText
+        email = findViewById<EditText>(R.id.registerEmailText)
+        password = findViewById<EditText>(R.id.registerPasswordText)
+        confirmPassword = findViewById<EditText>(R.id.registerConfirmPasswordText)
+        phoneNo = findViewById<EditText>(R.id.registerPhoneNoText)
         // Initialize other variables
 //        authHandler = AuthHandler()
 
@@ -70,7 +70,7 @@ class registrationActivity : AppCompatActivity() {
                         // Sign in success, update UI with the signed-in user's information
                         Log.v(TAG, "createUserWithEmail:success")
                         val user: FirebaseUser? = auth.getCurrentUser()
-//                            updateUI(user)
+//                            SwitchToMainView(user)
                     } else {
                         // If sign in fails, display a message to the u-ser.
                         Log.v(TAG, "createUserWithEmail:failure", task.exception)
