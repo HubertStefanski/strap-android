@@ -48,6 +48,9 @@ dependencies {
     // Declare the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
 
+    // Firebase database
+    implementation 'com.google.firebase:firebase-database:19.5.1'
+
     implementation 'com.google.firebase:firebase-auth-ktx'
     //Logging
     implementation 'microutils:kotlin.logging:1.2.1'
