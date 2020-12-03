@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.hstefans.strap_android.R
+import com.hstefans.strap_android.handlers.AuthHandler
 
 
 class AuthenticationActivity : AppCompatActivity() {
@@ -37,7 +38,7 @@ class AuthenticationActivity : AppCompatActivity() {
         password = findViewById<EditText>(R.id.passwordText)
 
         findViewById<Button>(R.id.loginButton).setOnClickListener() {
-          authenticateUser()
+            authenticateUser()
         }
 
         findViewById<Button>(R.id.registerRouteButton).setOnClickListener() {
@@ -46,6 +47,7 @@ class AuthenticationActivity : AppCompatActivity() {
         }
 
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -58,30 +60,67 @@ class AuthenticationActivity : AppCompatActivity() {
      * main login handler
      * @return void
      */
-// TODO implement me
     private fun authenticateUser() {
-        auth.signInWithEmailAndPassword(email.text.toString(), password.text.toString())
-            .addOnCompleteListener(this, OnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Successfully Logged In", Toast.LENGTH_LONG).show()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    Toast.makeText(this, "Login Failed, invalid credentials or non-existent user", Toast.LENGTH_LONG).show()
-                }
-            })
+        if (validateData(email.text.toString(), password.text.toString())) {
+            auth.signInWithEmailAndPassword(email.text.toString(), password.text.toString())
+                .addOnCompleteListener(this, OnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Successfully Logged In", Toast.LENGTH_LONG).show()
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "Login Failed, invalid credentials or non-existent user",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
+        }
     }
 
 
-}
+    fun validateData(strEmail: String, strPass: String): Boolean {
+        if (strEmail == "" || strPass == "") {
+            val errorToast = Toast.makeText(
+                this@AuthenticationActivity,
+                "Some fields are left empty!",
+                Toast.LENGTH_SHORT
+            )
+            errorToast.show()
+            return false
+        }
+        if (strPass.length < 6) {
+            val errorToast = Toast.makeText(
+                this@AuthenticationActivity,
+                "Password is too short, must be at least 6 characters long!",
+                Toast.LENGTH_SHORT
+            )
+            errorToast.show()
+            return false
+        }
+        val authHandler = AuthHandler()
+        if (!authHandler.isValidEmail(strEmail)) {
+            val errorToast = Toast.makeText(
+                this@AuthenticationActivity,
+                "Email is not valid, try again with a valid email",
+                Toast.LENGTH_SHORT
+            )
+            errorToast.show()
+            return false
+        }
+        //TODO implement another check for phone length and validity
+        return true
+    }
 
 
-/**
- * initializes the values used by this activity
- * @return void
- */
-fun initView() {
+    /**
+     * initializes the values used by this activity
+     * @return void
+     */
+    fun initView() {
 
+    }
 }
 
