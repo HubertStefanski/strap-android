@@ -3,8 +3,7 @@
 
 package org.hstefans.strap.app.models
 
-
-class Report(
+data class Report(
     var uid: String,
     var location: String,
     var description: String,
