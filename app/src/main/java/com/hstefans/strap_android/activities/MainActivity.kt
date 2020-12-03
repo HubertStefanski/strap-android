@@ -21,8 +21,8 @@ class MainActivity : AppCompatActivity() {
         tabLayout = findViewById(R.id.tabLayout)
         viewPager = findViewById(R.id.viewPager)
         tabLayout.addTab(tabLayout.newTab().setText("Settings"))
-        tabLayout.addTab(tabLayout.newTab().setText("Tasks"))
-        tabLayout.addTab(tabLayout.newTab().setText("Waypoints"))
+        tabLayout.addTab(tabLayout.newTab().setText("Task"))
+        tabLayout.addTab(tabLayout.newTab().setText("Waypoint"))
         tabLayout.addTab(tabLayout.newTab().setText("Report"))
         tabLayout.tabGravity = TabLayout.GRAVITY_FILL
         val adapter = MyAdapter(
