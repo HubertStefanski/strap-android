@@ -4,10 +4,9 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.lifecycle.ReportFragment
-import com.hstefans.strap_android.TaskFragment
-import com.hstefans.strap_android.UserSettingsFragment
-import com.hstefans.strap_android.WaypointsFragment
+import com.hstefans.strap_android.fragments.TaskFragment
+import com.hstefans.strap_android.fragments.UserSettingsFragment
+import com.hstefans.strap_android.fragments.WaypointsFragment
 
 @Suppress("DEPRECATION")
 internal class MyAdapter(
@@ -28,7 +27,7 @@ internal class MyAdapter(
                 WaypointsFragment()
             }
             3 -> {
-                com.hstefans.strap_android.ReportFragment()
+                com.hstefans.strap_android.fragments.ReportFragment()
             }
             else -> getItem(position)
         }
