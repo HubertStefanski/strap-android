@@ -110,7 +110,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextMultiLine"
+        android:id="@+id/newDescriptionTextField"
         android:layout_width="192dp"
         android:layout_height="164dp"
         android:layout_marginBottom="112dp"
