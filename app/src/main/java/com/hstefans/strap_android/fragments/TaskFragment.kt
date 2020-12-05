@@ -1,12 +1,16 @@
 package com.hstefans.strap_android.fragments
 
+import RecyclerItemClickListener
+import android.icu.lang.UCharacter.GraphemeClusterBreak.V
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +37,7 @@ class TaskFragment : Fragment() {
     private lateinit var deleteTaskButton: Button
     private lateinit var doneTaskButton: Button
     private lateinit var recyclerView: RecyclerView
-
+    private lateinit var chosenUID: String
     override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +55,27 @@ class TaskFragment : Fragment() {
         deleteTaskButton = view.findViewById(R.id.deleteTaskButton)
         doneTaskButton = view.findViewById(R.id.toggleTaskDoneStatus)
         recyclerView = view.findViewById(R.id.taskRecyclerView)
+        recyclerView.addOnItemTouchListener(
+            RecyclerItemClickListener(context,
+                recyclerView,
+                object : RecyclerItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        val chosenTask = adapter!!.getItem(position)
+                        newTaskTitle.setText(chosenTask.title)
+                        newTaskLocation.setText(chosenTask.location)
+                        newTaskDescription.setText(chosenTask.location)
+                        chosenUID = chosenTask.uid
+                        updateTaskButton.isEnabled = true
+                        deleteTaskButton.isEnabled = true
+                        doneTaskButton.isEnabled = true
+                    }
+
+                    override fun onLongItemClick(view: View?, position: Int) {
+                        // do whatever
+                    }
+                })
+        )
+
         //TextFields
         newTaskTitle = view.findViewById(R.id.taskTitleTextField)
         newTaskLocation = view.findViewById(R.id.taskLocationTextField)
@@ -62,6 +87,7 @@ class TaskFragment : Fragment() {
 
         val options = FirebaseRecyclerOptions.Builder<Task>()
             .setQuery(dbRef, Task::class.java).build()
+
         adapter = TaskAdapter(options)
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
@@ -82,14 +108,13 @@ class TaskFragment : Fragment() {
         }
         deleteTaskButton.setOnClickListener()
         {
-//            taskListView.setItemChecked(selectedPosition, false)
-//            dbRef.child(listKeys[selectedPosition]).removeValue()
-//            Log.v(TAG, "Task deleted $selectedPosition")
+            dbRef.child(chosenUID).removeValue()
         }
 
         return view
     }
 
+    //TODO implement ifTaskExists logic to prevent duplicate entries
     private fun handleNewTask() {
         if (validateData()) {
             val task = Task("",
@@ -105,10 +130,6 @@ class TaskFragment : Fragment() {
             }
         }
         clearFields()
-    }
-
-    private fun populateListView() {
-
     }
 
 
