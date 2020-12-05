@@ -43,13 +43,20 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
 
+    implementation "androidx.cardview:cardview:1.0.0"
+
+    // Dependency FirebaseUI for Firebase Realtime Database
+    implementation 'com.firebaseui:firebase-ui-database:6.2.1'
+
+    // Dependency for Firebase REaltime Database
+    implementation 'com.google.firebase:firebase-database:19.5.1'
+    // FirebaseUI for Cloud Firestore
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
+
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:26.1.0')
     // Declare the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-
-    // Firebase database
-    implementation 'com.google.firebase:firebase-database:19.5.1'
 
     implementation 'com.google.firebase:firebase-auth-ktx'
     //Logging
@@ -72,6 +79,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

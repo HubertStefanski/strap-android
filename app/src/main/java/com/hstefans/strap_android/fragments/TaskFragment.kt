@@ -1,38 +1,39 @@
 package com.hstefans.strap_android.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.hstefans.strap_android.R
 import com.hstefans.strap_android.models.Task
-import org.jetbrains.anko.find
 
 
 class TaskFragment : Fragment() {
     val TAG = "TaskFragment"
-    private val mListView: ListView? = null
     private lateinit var taskListView: ListView;
-    private var searchMode = false;
-    private var itemSelected = false;
-    private var selectedPosition = 0;
-    var listItems = ArrayList<String>()
-    var listKeys = ArrayList<String>()
-    var adapter: ArrayAdapter<String>? = null
 
-    val database = FirebaseDatabase.getInstance();
-    val dbRef = FirebaseDatabase.getInstance().getReference("users")
+    //    private var recyclerView: RecyclerView? = null
+    private var adapter: TaskAdapter? = null
+//    private var itemSelected = false
+//    private var selectedPosition = 0
+//    var listItems = ArrayList<String>()
+//    var listKeys = ArrayList<String>()
+////    private lateinit var adapter: DataAdapter
+
+    private val dbRef = FirebaseDatabase.getInstance().getReference("users")
         .child(FirebaseAuth.getInstance().currentUser!!.uid).child("tasks")
 
 
+    @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,38 +45,33 @@ class TaskFragment : Fragment() {
             false
         )
 
-        val taskListView: ListView = view.findViewById(R.id.taskListView);
+
+//        taskListView = view.findViewById(R.id.taskListView);
         val newTaskButton: View = view.findViewById(R.id.newTaskButton)
         val updateTaskButton: Button = view.findViewById(R.id.updateTaskButton)
         val deleteTaskButton: Button = view.findViewById(R.id.deleteTaskButton)
         val doneTaskButton: Button = view.findViewById(R.id.toggleTaskDoneStatus)
-        updateTaskButton.setEnabled(false)
-        doneTaskButton.setEnabled(false)
+        val recyclerView: RecyclerView = view.findViewById(R.id.taskRecyclerView);
+
+        updateTaskButton.isEnabled = false
+        doneTaskButton.isEnabled = false
 
 
-        adapter = this.context?.let {
-            ArrayAdapter<String>(
-                it.applicationContext,
-                android.R.layout.simple_list_item_single_choice,
-                listItems
-            )
-        }
-        taskListView.setAdapter(adapter);
-        taskListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        taskListView.setOnItemClickListener(
-            OnItemClickListener { parent, view, position, id ->
-                selectedPosition = position
-                itemSelected = true
-                deleteTaskButton.setEnabled(true)
-            })
+        val options: FirebaseRecyclerOptions<Task> = FirebaseRecyclerOptions.Builder<Task>()
+            .setQuery(dbRef, Task::class.java)
+            .build()
+        adapter = TaskAdapter(options)
+        recyclerView.layoutManager = LinearLayoutManager(this.context)
 
-        addChildEventListener()
+        recyclerView.adapter = adapter
+
         // Disable this button until a task is selected
-        deleteTaskButton.setEnabled(false)
+        deleteTaskButton.isEnabled = false
 
         newTaskButton.setOnClickListener()
         {
-            handleNewTask()
+//            handleNewTask()
+            createData(dbRef)
         }
         updateTaskButton.setOnClickListener()
         {
@@ -83,9 +79,9 @@ class TaskFragment : Fragment() {
         }
         deleteTaskButton.setOnClickListener()
         {
-            taskListView.setItemChecked(selectedPosition, false);
-            dbRef.child(listKeys.get(selectedPosition)).removeValue();
-            Log.v(TAG,"Task deleted $selectedPosition")
+//            taskListView.setItemChecked(selectedPosition, false)
+//            dbRef.child(listKeys[selectedPosition]).removeValue()
+//            Log.v(TAG, "Task deleted $selectedPosition")
         }
 
         return view
@@ -127,30 +123,19 @@ class TaskFragment : Fragment() {
         }
     }
 
-    private fun addChildEventListener() {
-        val childListener: ChildEventListener = object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                adapter!!.add(
-                    dataSnapshot.child("description").value as String?
-                )
-                listKeys.add(dataSnapshot.key!!)
-            }
-
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                val key = dataSnapshot.key
-                val index = listKeys.indexOf(key)
-                if (index != -1) {
-                    listItems.removeAt(index)
-                    listKeys.removeAt(index)
-                    adapter!!.notifyDataSetChanged()
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        }
-        dbRef.addChildEventListener(childListener)
+    // Function to tell the app to start getting
+    // data from database on starting of the activity
+    override fun onStart() {
+        super.onStart()
+        adapter!!.startListening()
     }
+
+    // Function to tell the app to stop getting
+    // data from database on stoping of the activity
+    override fun onStop() {
+        super.onStop()
+        adapter!!.stopListening()
+    }
+
 }
 
