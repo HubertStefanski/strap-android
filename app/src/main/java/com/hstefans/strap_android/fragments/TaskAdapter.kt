@@ -1,14 +1,15 @@
 package com.hstefans.strap_android.fragments
 
 import android.view.LayoutInflater
-import com.hstefans.strap_android.R
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.hstefans.strap_android.R
 import com.hstefans.strap_android.models.Task
+
 
 // FirebaseRecyclerAdapter is a class provided by
 // FirebaseUI. it provides functions to bind, adapt and show
@@ -20,12 +21,13 @@ class TaskAdapter(
         holder: TaskViewholder,
         position: Int, model: Task
     ) {
+        holder.title.text = model.title
 
-        holder.taskTitle.text = model.title
-        
-        holder.taskLocation.text = model.location
+        holder.location.text = model.location
 
-        holder.taskDescription.text = model.title
+        holder.description.text = model.title
+
+        holder.doneStatus.text = model.doneStatus.toString()
     }
 
     override fun onCreateViewHolder(
@@ -37,11 +39,11 @@ class TaskAdapter(
         return TaskViewholder(view)
     }
 
-    inner class TaskViewholder(itemView: View) :
+    class TaskViewholder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        var taskTitle: TextView = itemView.findViewById(R.id.taskCardTitle)
-        var taskLocation: TextView = itemView.findViewById(R.id.taskCardLocation)
-        var taskDescription: TextView = itemView.findViewById(R.id.TaskCardDescription)
-
+        var title: TextView = itemView.findViewById(R.id.taskCardTitle)
+        var location: TextView = itemView.findViewById(R.id.taskCardLocation)
+        var description: TextView = itemView.findViewById(R.id.taskCardDescription)
+        var doneStatus: TextView = itemView.findViewById(R.id.taskCardDoneStatus)
     }
 }

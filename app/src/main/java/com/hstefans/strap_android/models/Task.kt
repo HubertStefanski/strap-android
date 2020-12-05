@@ -1,24 +1,13 @@
 package com.hstefans.strap_android.models
 
-import java.io.Serializable
 
-class Task : Serializable {
-    public var uid: String = ""
-    public var title: String = ""
-    public var assignee: String = ""
-    public var description: String = ""
-    public var location: String = ""
-    public var doneStatus: Boolean = false
+data class Task(
+    var uid: String,
+    var title: String,
+    var description: String,
+    var location: String,
+    var doneStatus: Boolean
+) {
+    constructor() : this("", "", "", "", false)
 
-
-    constructor() {}
-
-    constructor(
-        uid: String,
-        title: String,
-        assignee: String,
-        description: String,
-        location: String,
-        doneStatus: Boolean
-    )
 }

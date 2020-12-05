@@ -33,7 +33,6 @@ class TaskFragment : Fragment() {
         .child(FirebaseAuth.getInstance().currentUser!!.uid).child("tasks")
 
 
-    @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,9 +56,8 @@ class TaskFragment : Fragment() {
         doneTaskButton.isEnabled = false
 
 
-        val options: FirebaseRecyclerOptions<Task> = FirebaseRecyclerOptions.Builder<Task>()
-            .setQuery(dbRef, Task::class.java)
-            .build()
+        val options = FirebaseRecyclerOptions.Builder<Task>()
+            .setQuery(dbRef, Task::class.java).build()
         adapter = TaskAdapter(options)
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
@@ -71,7 +69,7 @@ class TaskFragment : Fragment() {
         newTaskButton.setOnClickListener()
         {
 //            handleNewTask()
-            createData(dbRef)
+//            createData(dbRef)
         }
         updateTaskButton.setOnClickListener()
         {
@@ -108,17 +106,17 @@ class TaskFragment : Fragment() {
         val ref = FirebaseDatabase.getInstance().getReference("users")
             .child(FirebaseAuth.getInstance().currentUser!!.uid).child("tasks")
         val tasks: List<Task> = mutableListOf(
-            Task("someuid", "Title1", "WIT", "do something", "exampleOwner", false),
-            Task("someuid2", "Title2", "WIT", "do something", "exampleOwner", false),
-            Task("someuid3", "Title3", "WIT", "do something", "exampleOwner", false),
-            Task("someuid4", "Title4", "WIT", "do something", "exampleOwner", false)
+            Task("", "Title1", "WIT", "do something",  false),
+            Task("", "Title2", "WIT", "do something", false),
+            Task("", "Title3", "WIT", "do something",  false),
+            Task("", "Title4", "WIT", "do something", false)
         )
         tasks.forEach {
             val key = ref.child("tasks").push().key
             if (key != null) {
                 it.uid = key
 
-                ref.child("tasks").child(key).setValue(it)
+                ref.child(key).setValue(it)
             }
         }
     }
