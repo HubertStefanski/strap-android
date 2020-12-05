@@ -1,16 +1,13 @@
 package com.hstefans.strap_android.fragments
 
 import RecyclerItemClickListener
-import android.icu.lang.UCharacter.GraphemeClusterBreak.V
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,7 +34,9 @@ class TaskFragment : Fragment() {
     private lateinit var deleteTaskButton: Button
     private lateinit var doneTaskButton: Button
     private lateinit var recyclerView: RecyclerView
-    private lateinit var chosenUID: String
+    private lateinit var chosenTask: Task
+
+    //    private lateinit var chosenUID: String
     override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,11 +59,10 @@ class TaskFragment : Fragment() {
                 recyclerView,
                 object : RecyclerItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        val chosenTask = adapter!!.getItem(position)
+                        chosenTask = adapter!!.getItem(position)
                         newTaskTitle.setText(chosenTask.title)
                         newTaskLocation.setText(chosenTask.location)
                         newTaskDescription.setText(chosenTask.location)
-                        chosenUID = chosenTask.uid
                         updateTaskButton.isEnabled = true
                         deleteTaskButton.isEnabled = true
                         doneTaskButton.isEnabled = true
@@ -84,6 +82,9 @@ class TaskFragment : Fragment() {
         updateTaskButton.isEnabled = false
         doneTaskButton.isEnabled = false
 
+        doneTaskButton.setOnClickListener() {
+            handleDoneToggle()
+        }
 
         val options = FirebaseRecyclerOptions.Builder<Task>()
             .setQuery(dbRef, Task::class.java).build()
@@ -108,10 +109,23 @@ class TaskFragment : Fragment() {
         }
         deleteTaskButton.setOnClickListener()
         {
-            dbRef.child(chosenUID).removeValue()
+            dbRef.child(chosenTask.uid).removeValue()
         }
 
         return view
+    }
+
+
+    private fun handleDoneToggle() {
+        //FIXME
+        if (!chosenTask.doneStatus) {
+            chosenTask.doneStatus = true
+
+        } else if (chosenTask.doneStatus) {
+            chosenTask.doneStatus = false
+        }
+        dbRef.child(chosenTask.uid).setValue(chosenTask)
+
     }
 
     //TODO implement ifTaskExists logic to prevent duplicate entries
@@ -140,29 +154,11 @@ class TaskFragment : Fragment() {
                 newTaskDescription.text.toString(),
                 newTaskLocation.text.toString(),
                 false)
-            dbRef.child(chosenUID).setValue(task)
+            dbRef.child(chosenTask.uid).setValue(task)
         }
 
     }
 
-
-    fun createData() {
-
-        val tasks: List<Task> = mutableListOf(
-            Task("", "Title1", "WIT", "do something", false),
-            Task("", "Title2", "WIT", "do something", false),
-            Task("", "Title3", "WIT", "do something", false),
-            Task("", "Title4", "WIT", "do something", false)
-        )
-        tasks.forEach {
-            val key = dbRef.child("tasks").push().key
-            if (key != null) {
-                it.uid = key
-
-                dbRef.child(key).setValue(it)
-            }
-        }
-    }
 
     // Function to tell the app to start getting
     // data from database on starting of the activity
