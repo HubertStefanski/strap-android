@@ -1,4 +1,4 @@
-package com.hstefans.strap_android
+package com.hstefans.strap_android.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

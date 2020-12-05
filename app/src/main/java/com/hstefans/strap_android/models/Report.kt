@@ -1,10 +1,9 @@
 //@author Hubert Stefanski
 
 
-package org.hstefans.strap.app.models
+package com.hstefans.strap_android.models
 
-
-class Report(
+data class Report(
     var uid: String,
     var location: String,
     var description: String,
