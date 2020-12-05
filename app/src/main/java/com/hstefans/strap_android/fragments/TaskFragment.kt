@@ -134,6 +134,14 @@ class TaskFragment : Fragment() {
 
 
     private fun handleUpdateTask() {
+        if (validateData()) {
+            val task = Task("",
+                newTaskTitle.text.toString(),
+                newTaskDescription.text.toString(),
+                newTaskLocation.text.toString(),
+                false)
+            dbRef.child(chosenUID).setValue(task)
+        }
 
     }
 
