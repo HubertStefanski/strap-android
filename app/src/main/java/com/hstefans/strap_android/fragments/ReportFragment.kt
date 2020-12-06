@@ -30,8 +30,7 @@ class ReportFragment : Fragment() {
     val TAG = "TaskFragment"
 
 
-
-    private var storagePhotoRef:String = ""
+    private var storagePhotoRef: String = ""
     private var filePath: Uri? = null
     private val PICK_IMAGE_REQUEST = 71
     private var adapter: ReportAdapter? = null
@@ -45,6 +44,7 @@ class ReportFragment : Fragment() {
 
     val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
     val currentDate = sdf.format(Date())
+
     // request code
     private lateinit var reportPhotoImageView: ImageView
     private lateinit var newReportLocation: EditText
@@ -107,8 +107,6 @@ class ReportFragment : Fragment() {
         updateReportButton.isEnabled = false
 
         attachPhotoReportButton.setOnClickListener() {
-            //TODO
-            //handleAttachPhoto()
             chooseImage();
         }
 
@@ -127,20 +125,17 @@ class ReportFragment : Fragment() {
 
         newReportButton.setOnClickListener()
         {
-            //TODO handle newReport
             handleNewReport()
         }
         updateReportButton.setOnClickListener()
         {
-//            TODO handleUpdateReport
+//            TODO FIXME handleUpdateReport
 //            handleUpdateReport()
         }
         deleteReportButton.setOnClickListener()
         {
-            //TODO
-//            Handle report deletion
-
-//            dbRef.child(chosenReport.uid).removeValue()
+            //TODO implement deletion for associated photo
+            dbRef.child(chosenReport.uid).removeValue()
         }
 
         return view
@@ -150,7 +145,8 @@ class ReportFragment : Fragment() {
     //TODO implement ifTaskExists logic to prevent duplicate entries
     private fun handleNewReport() {
         if (validateData()) {
-            uploadImage()
+//            TODO activate me afte implementing proper imageview display in Report Card
+//            uploadImage()
             val report =
                 Report("",
                     newReportLocation.text.toString(),
@@ -170,16 +166,17 @@ class ReportFragment : Fragment() {
     }
 
 
+    //FIXME to ensure that StoragePhotoRef has proper URI assigned
     private fun handleUpdateReport() {
         if (validateData()) {
-            val report = filePath?.let {
+            val report =
                 Report("",
                     newReportLocation.text.toString(),
                     newReportDamage.text.toString(),
                     currentDate,
-                    it.toString()
+                    storagePhotoRef
                 )
-            }
+
             dbRef.child(chosenReport.uid).setValue(report)
         }
 
@@ -203,8 +200,7 @@ class ReportFragment : Fragment() {
 
     private fun validateData(): Boolean {
         if (newReportLocation.text.toString() == "" ||
-            newReportDamage.text.toString() == "" ||
-            filePath.toString() == ""
+            newReportDamage.text.toString() == ""
         ) {
             val errorToast = Toast.makeText(
                 this.context,
