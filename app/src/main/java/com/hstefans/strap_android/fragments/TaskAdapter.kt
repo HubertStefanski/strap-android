@@ -56,6 +56,3 @@ class TaskAdapter(
     }
 }
 
-interface RecyclerViewClickListener {
-    fun recyclerViewListClicked(v: View?, position: Int)
-}

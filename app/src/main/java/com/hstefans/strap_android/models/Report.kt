@@ -1,28 +1,14 @@
-//@author Hubert Stefanski
-
-
 package com.hstefans.strap_android.models
+
 
 data class Report(
     var uid: String,
     var location: String,
-    var description: String,
     var damage: String,
-    var resolution: String,
-    var reportee: String
+    var date: String,
+    var photoRef: String
+
 ) {
-
-    val uidProperty = uid
-
-    val locationProperty = location
-
-    val descriptionProperty = description
-
-    val damageProperty = damage
-
-    val resolutionProperty = resolution
-
-    val reporteeProperty = description
-
+    constructor() : this("", "", "", "", "")
 
 }
