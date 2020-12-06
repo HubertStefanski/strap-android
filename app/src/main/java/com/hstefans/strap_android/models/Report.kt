@@ -5,11 +5,10 @@ data class Report(
     var uid: String,
     var location: String,
     var damage: String,
-    var time: String,
     var date: String,
     var photoRef: String
 
 ) {
-    constructor() : this("", "", "", "", "","")
+    constructor() : this("", "", "", "", "")
 
 }
