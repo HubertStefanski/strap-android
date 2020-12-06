@@ -1,33 +1,52 @@
 package com.hstefans.strap_android.fragments
 
 import RecyclerItemClickListener
+import android.app.Activity.RESULT_OK
+import android.app.ProgressDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.hstefans.strap_android.R
 import com.hstefans.strap_android.models.Report
-import com.hstefans.strap_android.models.Task
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ReportFragment : Fragment() {
     val TAG = "TaskFragment"
 
 
+
+    private var storagePhotoRef:String = ""
+    private var filePath: Uri? = null
+    private val PICK_IMAGE_REQUEST = 71
     private var adapter: ReportAdapter? = null
     private val dbRef = FirebaseDatabase.getInstance().getReference("users")
         .child(FirebaseAuth.getInstance().currentUser!!.uid).child("reports")
 
+    //Firebase
+    var storage: FirebaseStorage? = null
+    var storageReference: StorageReference? = null
+
+
+    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+    val currentDate = sdf.format(Date())
+    // request code
+    private lateinit var reportPhotoImageView: ImageView
     private lateinit var newReportLocation: EditText
     private lateinit var newReportDamage: EditText
     private lateinit var newReportPhotoref: EditText
@@ -51,9 +70,14 @@ class ReportFragment : Fragment() {
             false
         )
 
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage!!.reference;
+
         //Buttons & Views
+        reportPhotoImageView = view.findViewById(R.id.reportPhotoImageView)
         newReportButton = view.findViewById(R.id.newReportButton)
-        newReportDamage = view.findViewById(R.id.updateReportButton)
+        newReportDamage = view.findViewById(R.id.reportDamageTextField)
+        updateReportButton = view.findViewById(R.id.updateReportButton)
         deleteReportButton = view.findViewById(R.id.deleteReportButton)
         attachPhotoReportButton = view.findViewById(R.id.reportAttachPhotoButton)
         recyclerView = view.findViewById(R.id.reportRecyclerView)
@@ -65,10 +89,8 @@ class ReportFragment : Fragment() {
                         chosenReport = adapter!!.getItem(position)
                         newReportDamage.setText(chosenReport.damage)
                         newReportLocation.setText(chosenReport.location)
-                        reportDateTextView.text = chosenReport.date
                         updateReportButton.isEnabled = true
                         deleteReportButton.isEnabled = true
-                        attachPhotoReportButton.isEnabled = true
                     }
 
                     override fun onLongItemClick(view: View?, position: Int) {
@@ -83,11 +105,11 @@ class ReportFragment : Fragment() {
 //        newReportPhotoref = view.findViewById(R.id.reportPhotoImageView)
 
         updateReportButton.isEnabled = false
-        attachPhotoReportButton.isEnabled = false
 
         attachPhotoReportButton.setOnClickListener() {
             //TODO
             //handleAttachPhoto()
+            chooseImage();
         }
 
         val options = FirebaseRecyclerOptions.Builder<Report>()
@@ -106,7 +128,7 @@ class ReportFragment : Fragment() {
         newReportButton.setOnClickListener()
         {
             //TODO handle newReport
-            //            handleNewReport()
+            handleNewReport()
         }
         updateReportButton.setOnClickListener()
         {
@@ -125,16 +147,18 @@ class ReportFragment : Fragment() {
     }
 
 
-
     //TODO implement ifTaskExists logic to prevent duplicate entries
     private fun handleNewReport() {
         if (validateData()) {
-            val report = Report("",
-                newReportLocation.text.toString(),
-                newReportDamage.text.toString(),
-                java.util.Calendar.getInstance().toString(),
-                newReportPhotoref.text.toString()
+            uploadImage()
+            val report =
+                Report("",
+                    newReportLocation.text.toString(),
+                    newReportDamage.text.toString(),
+                    currentDate,
+                    storagePhotoRef
                 )
+
 
             val key = dbRef.child("reports").push().key
             if (key != null) {
@@ -146,14 +170,16 @@ class ReportFragment : Fragment() {
     }
 
 
-    private fun handleUpdateTask() {
+    private fun handleUpdateReport() {
         if (validateData()) {
-            val report = Report("",
-                newReportLocation.text.toString(),
-                newReportDamage.text.toString(),
-                java.util.Calendar.getInstance().toString(),
-                newReportPhotoref.text.toString()
-            )
+            val report = filePath?.let {
+                Report("",
+                    newReportLocation.text.toString(),
+                    newReportDamage.text.toString(),
+                    currentDate,
+                    it.toString()
+                )
+            }
             dbRef.child(chosenReport.uid).setValue(report)
         }
 
@@ -178,11 +204,11 @@ class ReportFragment : Fragment() {
     private fun validateData(): Boolean {
         if (newReportLocation.text.toString() == "" ||
             newReportDamage.text.toString() == "" ||
-            newReportPhotoref.text.toString() == ""
+            filePath.toString() == ""
         ) {
             val errorToast = Toast.makeText(
                 this.context,
-                "Some fields are left empty!",
+                "some fields are left empty or no photo!",
                 Toast.LENGTH_SHORT
             )
             errorToast.show()
@@ -194,7 +220,56 @@ class ReportFragment : Fragment() {
     private fun clearFields() {
         newReportLocation.setText("")
         newReportDamage.setText("")
-        newReportPhotoref.setText("")
+//        newReportPhotoref.setText("")
+    }
+
+    private fun chooseImage() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
+            filePath = data.data
+            try {
+                val bitmap = MediaStore.Images.Media.getBitmap(this.context?.contentResolver,
+                    filePath)
+                reportPhotoImageView.setImageBitmap(bitmap)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun uploadImage() {
+        if (filePath != null) {
+            val progressDialog = ProgressDialog(this.context)
+            progressDialog.setTitle("Uploading...")
+            progressDialog.show()
+
+            val ref = storageReference!!.child("images").child(UUID.randomUUID().toString())
+            storagePhotoRef = ref.toString()
+            ref.putFile(filePath!!)
+                .addOnSuccessListener {
+                    progressDialog.dismiss()
+                    Toast.makeText(this.context, "Uploaded", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    progressDialog.dismiss()
+                    Toast.makeText(this.context, "Failed " + e.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+                .addOnProgressListener { taskSnapshot ->
+                    val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot
+                        .totalByteCount
+                    progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
+                }
+            storagePhotoRef = ref.downloadUrl.toString()
+        }
+
     }
 }
 

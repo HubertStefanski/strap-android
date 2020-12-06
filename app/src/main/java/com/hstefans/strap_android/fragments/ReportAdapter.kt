@@ -1,17 +1,20 @@
 package com.hstefans.strap_android.fragments
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.hstefans.strap_android.R
 import com.hstefans.strap_android.models.Report
+import java.io.InputStream
+import java.net.URL
 
 
 // FirebaseRecyclerAdapter is a class provided by
@@ -34,8 +37,7 @@ class ReportAdapter(
         holder.location.text = model.location
 
         holder.date.text = model.date
-
-        holder.photoref.text = model.photoRef
+//        Glide.with(this@fragment_report).load(model.photoRef).into(holder.reportCardImagePreview);
 
     }
 
@@ -54,7 +56,7 @@ class ReportAdapter(
         var damage: TextView = itemView.findViewById(R.id.reportCardDamage)
         var location: TextView = itemView.findViewById(R.id.reportCardLocation)
         var date: TextView = itemView.findViewById(R.id.reportDateText)
-        var photoref: TextView = itemView.findViewById(R.id.reportCardPhotoRef)
+        var reportCardImagePreview: ImageView = itemView.findViewById(R.id.reportCardImagePreview)
     }
 }
 
