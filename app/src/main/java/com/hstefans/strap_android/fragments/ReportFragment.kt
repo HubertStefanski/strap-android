@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,9 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -91,6 +94,7 @@ class ReportFragment : Fragment() {
                         newReportLocation.setText(chosenReport.location)
                         updateReportButton.isEnabled = true
                         deleteReportButton.isEnabled = true
+                        loadPreView(chosenReport.photoRef)
                     }
 
                     override fun onLongItemClick(view: View?, position: Int) {
@@ -126,6 +130,8 @@ class ReportFragment : Fragment() {
         newReportButton.setOnClickListener()
         {
             handleNewReport()
+            clearFields()
+
         }
         updateReportButton.setOnClickListener()
         {
@@ -136,6 +142,7 @@ class ReportFragment : Fragment() {
         {
             //TODO implement deletion for associated photo
             dbRef.child(chosenReport.uid).removeValue()
+            clearFields()
         }
 
         return view
@@ -146,20 +153,21 @@ class ReportFragment : Fragment() {
     private fun handleNewReport() {
         if (validateData()) {
 //            TODO activate me afte implementing proper imageview display in Report Card
-//            uploadImage()
-            val report =
-                Report("",
-                    newReportLocation.text.toString(),
-                    newReportDamage.text.toString(),
-                    currentDate,
-                    storagePhotoRef
-                )
+            if (uploadImage()) {
+                val report =
+                    Report("",
+                        newReportLocation.text.toString(),
+                        newReportDamage.text.toString(),
+                        currentDate,
+                        storagePhotoRef
+                    )
 
 
-            val key = dbRef.child("reports").push().key
-            if (key != null) {
-                report.uid = key
-                dbRef.child(key).setValue(report)
+                val key = dbRef.child("reports").push().key
+                if (key != null) {
+                    report.uid = key
+                    dbRef.child(key).setValue(report)
+                }
             }
         }
         clearFields()
@@ -240,7 +248,7 @@ class ReportFragment : Fragment() {
         }
     }
 
-    private fun uploadImage() {
+    private fun uploadImage(): Boolean {
         if (filePath != null) {
             val progressDialog = ProgressDialog(this.context)
             progressDialog.setTitle("Uploading...")
@@ -248,8 +256,10 @@ class ReportFragment : Fragment() {
 
             val ref = storageReference!!.child("images").child(UUID.randomUUID().toString())
             storagePhotoRef = ref.toString()
+            Log.d(TAG,storagePhotoRef.toString())
             ref.putFile(filePath!!)
                 .addOnSuccessListener {
+
                     progressDialog.dismiss()
                     Toast.makeText(this.context, "Uploaded", Toast.LENGTH_SHORT).show()
                 }
@@ -263,9 +273,25 @@ class ReportFragment : Fragment() {
                         .totalByteCount
                     progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
                 }
-            storagePhotoRef = ref.downloadUrl.toString()
+
+            ref.downloadUrl.addOnSuccessListener {
+                storagePhotoRef = it.toString()
+
+            }
+            return true
         }
 
+        return false
+
     }
+
+    fun loadPreView(photoRef: String) {
+        Log.d(TAG, photoRef)
+        this.context?.let {
+            Glide.with(it).load(photoRef)
+                .into(reportPhotoImageView)
+        }
+    }
+
 }
 

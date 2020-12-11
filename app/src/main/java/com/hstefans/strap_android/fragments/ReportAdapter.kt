@@ -1,7 +1,7 @@
 package com.hstefans.strap_android.fragments
 
 import android.content.Context
-import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +9,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Registry
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.storage.images.FirebaseImageLoader
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.hstefans.strap_android.R
 import com.hstefans.strap_android.models.Report
 import java.io.InputStream
-import java.net.URL
 
 
 // FirebaseRecyclerAdapter is a class provided by
@@ -25,6 +32,8 @@ class ReportAdapter(
 ) : FirebaseRecyclerAdapter<Report, ReportAdapter.ReportViewholder>(options) {
     private val context: Context? = null
     private val itemListener: RecyclerViewClickListener? = null
+    var storage = FirebaseStorage.getInstance()
+
 
     override fun onBindViewHolder(
         holder: ReportViewholder,
@@ -37,8 +46,10 @@ class ReportAdapter(
         holder.location.text = model.location
 
         holder.date.text = model.date
-//        Glide.with(this@fragment_report).load(model.photoRef).into(holder.reportCardImagePreview);
-
+//        Log.d("SOMETHING", model.photoRef)
+//        this.context?.let {
+//            Glide.with(it).load(model.photoRef).into(holder.reportCardImagePreview)
+//        }
     }
 
     override fun onCreateViewHolder(
@@ -63,3 +74,21 @@ class ReportAdapter(
 interface RecyclerViewClickListener {
     fun recyclerViewListClicked(v: View?, position: Int)
 }
+
+@GlideModule
+class Glide: AppGlideModule(){
+
+    override fun registerComponents(
+        context: android.content.Context,
+        glide: Glide,
+        registry: Registry
+    ) {
+        super.registerComponents(context, glide, registry)
+        registry.append(
+            StorageReference::class.java, InputStream::class.java,
+            FirebaseImageLoader.Factory()
+        )
+
+    }
+}
+
