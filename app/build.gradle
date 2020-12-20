@@ -44,6 +44,12 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
 
     implementation "androidx.cardview:cardview:1.0.0"
+    // play services
+    implementation 'com.google.android.gms:play-services-maps:11.8.0'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+
+    implementation  'com.google.android.gms:play-services-gcm:17.0.0'
+    implementation  'com.google.android.gms:play-services-location:17.1.0'
 
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 
@@ -52,6 +58,10 @@ dependencies {
 
     // Dependency FirebaseUI for Firebase Realtime Database
     implementation 'com.firebaseui:firebase-ui-database:6.2.1'
+
+
+    implementation 'com.google.android.gms:play-services-auth:16.0.0'
+    implementation 'com.google.firebase:firebase-auth:16.0.3'
 
     // Dependency for Firebase REaltime Database
     implementation 'com.google.firebase:firebase-database:19.5.1'
@@ -85,6 +95,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

@@ -136,6 +136,7 @@ class ReportFragment : Fragment() {
         {
             //TODO implement deletion for associated photo
             dbRef.child(chosenReport.uid).removeValue()
+            clearFields()
         }
 
         return view
@@ -145,7 +146,7 @@ class ReportFragment : Fragment() {
     //TODO implement ifTaskExists logic to prevent duplicate entries
     private fun handleNewReport() {
         if (validateData()) {
-//            TODO activate me afte implementing proper imageview display in Report Card
+//            TODO activate me after implementing proper imageview display in Report Card
 //            uploadImage()
             val report =
                 Report("",
@@ -166,7 +167,7 @@ class ReportFragment : Fragment() {
     }
 
 
-    //FIXME to ensure that StoragePhotoRef has proper URI assigned
+//    FIXME to ensure that StoragePhotoRef has proper URI assigned
     private fun handleUpdateReport() {
         if (validateData()) {
             val report =
@@ -217,6 +218,7 @@ class ReportFragment : Fragment() {
         newReportLocation.setText("")
         newReportDamage.setText("")
 //        newReportPhotoref.setText("")
+        reportPhotoImageView.setImageBitmap(null)
     }
 
     private fun chooseImage() {
