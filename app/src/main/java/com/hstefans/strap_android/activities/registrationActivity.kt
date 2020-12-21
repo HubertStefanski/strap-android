@@ -17,15 +17,15 @@ import com.hstefans.strap_android.handlers.AuthHandler
 
 
 class registrationActivity : AppCompatActivity() {
-    private val TAG = "AuthenticationActivity"
+    private val TAG = "RegistrationActivty"
 
 
-    // TODO Implement me
     lateinit var email: EditText
     lateinit var password: EditText
     lateinit var confirmPassword: EditText
     lateinit var phoneNo: EditText
     lateinit var registerButton: Button
+    lateinit var returnButton: Button
     var authHandler: AuthHandler = AuthHandler()
     private lateinit var auth: FirebaseAuth
 
@@ -50,6 +50,9 @@ class registrationActivity : AppCompatActivity() {
         findViewById<Button>(R.id.registerButton).setOnClickListener {
             handleRegistration()
 
+        }
+        findViewById<Button>(R.id.returnButton).setOnClickListener {
+            setContentView(R.layout.activity_authentication)
         }
 
 
@@ -105,8 +108,6 @@ class registrationActivity : AppCompatActivity() {
             return false
         }
         if (strPass != strConfirmPass) {
-//        if (authHandler.hashString(strPass) != authHandler.hashString(strConfirmPass)
-//        ) {
             val errorToast = Toast.makeText(
                 this@registrationActivity,
                 "Passwords do not match!",
