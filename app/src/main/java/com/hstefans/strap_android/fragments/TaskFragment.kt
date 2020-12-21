@@ -110,6 +110,8 @@ class TaskFragment : Fragment() {
         deleteTaskButton.setOnClickListener()
         {
             dbRef.child(chosenTask.uid).removeValue()
+            clearFields()
+
         }
 
         return view
@@ -155,7 +157,10 @@ class TaskFragment : Fragment() {
                 newTaskLocation.text.toString(),
                 false)
             dbRef.child(chosenTask.uid).setValue(task)
+            clearFields()
+
         }
+
 
     }
 
