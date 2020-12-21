@@ -136,6 +136,7 @@ class ReportFragment : Fragment() {
         {
             //TODO implement deletion for associated photo
             dbRef.child(chosenReport.uid).removeValue()
+            clearFields()
         }
 
         return view
@@ -217,6 +218,7 @@ class ReportFragment : Fragment() {
         newReportLocation.setText("")
         newReportDamage.setText("")
 //        newReportPhotoref.setText("")
+        reportPhotoImageView.setImageBitmap(null)
     }
 
     private fun chooseImage() {
