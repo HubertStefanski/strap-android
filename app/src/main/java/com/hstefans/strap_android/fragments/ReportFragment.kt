@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -49,7 +50,7 @@ class ReportFragment : Fragment() {
     private lateinit var reportPhotoImageView: ImageView
     private lateinit var newReportLocation: EditText
     private lateinit var newReportDamage: EditText
-    private lateinit var newReportPhotoref: EditText
+    private lateinit var newReportPhotoref: String
     private lateinit var reportDateTextView: TextView
     private lateinit var newReportButton: Button
     private lateinit var updateReportButton: Button
@@ -89,6 +90,7 @@ class ReportFragment : Fragment() {
                         chosenReport = adapter!!.getItem(position)
                         newReportDamage.setText(chosenReport.damage)
                         newReportLocation.setText(chosenReport.location)
+                        storagePhotoRef = chosenReport.photoRef
                         updateReportButton.isEnabled = true
                         deleteReportButton.isEnabled = true
                     }
@@ -130,11 +132,11 @@ class ReportFragment : Fragment() {
         updateReportButton.setOnClickListener()
         {
 //            TODO FIXME handleUpdateReport
-//            handleUpdateReport()
+            handleUpdateReport()
         }
         deleteReportButton.setOnClickListener()
         {
-            //TODO implement deletion for associated photo
+            storage!!.getReferenceFromUrl(chosenReport.photoRef).delete()
             dbRef.child(chosenReport.uid).removeValue()
             clearFields()
         }
@@ -143,11 +145,10 @@ class ReportFragment : Fragment() {
     }
 
 
-    //TODO implement ifTaskExists logic to prevent duplicate entries
     private fun handleNewReport() {
         if (validateData()) {
 //            TODO activate me afte implementing proper imageview display in Report Card
-//            uploadImage()
+            uploadImage()
             val report =
                 Report("",
                     newReportLocation.text.toString(),
@@ -167,7 +168,6 @@ class ReportFragment : Fragment() {
     }
 
 
-    //FIXME to ensure that StoragePhotoRef has proper URI assigned
     private fun handleUpdateReport() {
         if (validateData()) {
             val report =
@@ -217,7 +217,7 @@ class ReportFragment : Fragment() {
     private fun clearFields() {
         newReportLocation.setText("")
         newReportDamage.setText("")
-//        newReportPhotoref.setText("")
+        newReportPhotoref = ""
         reportPhotoImageView.setImageBitmap(null)
     }
 
@@ -254,6 +254,13 @@ class ReportFragment : Fragment() {
                 .addOnSuccessListener {
                     progressDialog.dismiss()
                     Toast.makeText(this.context, "Uploaded", Toast.LENGTH_SHORT).show()
+                    ref.downloadUrl.addOnCompleteListener {
+                        if (it.isComplete) {
+                            storagePhotoRef = it.result.toString()
+                        }
+
+
+                    };
                 }
                 .addOnFailureListener { e ->
                     progressDialog.dismiss()
@@ -265,9 +272,14 @@ class ReportFragment : Fragment() {
                         .totalByteCount
                     progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
                 }
-            storagePhotoRef = ref.downloadUrl.toString()
-        }
+//            ref.downloadUrl.addOnSuccessListener { uri ->
+//                storagePhotoRef = uri.toString()
+//            }
 
+//            storagePhotoRef = ref.downloadUrl.toString()
+        }
     }
 }
+
+
 
