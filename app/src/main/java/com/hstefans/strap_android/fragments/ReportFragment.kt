@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -104,7 +103,6 @@ class ReportFragment : Fragment() {
         //TextFields
         newReportLocation = view.findViewById(R.id.reportLocationTextField)
         newReportDamage = view.findViewById(R.id.reportDamageTextField)
-//        newReportPhotoref = view.findViewById(R.id.reportPhotoImageView)
 
         updateReportButton.isEnabled = false
 
@@ -131,7 +129,6 @@ class ReportFragment : Fragment() {
         }
         updateReportButton.setOnClickListener()
         {
-//            TODO FIXME handleUpdateReport
             handleUpdateReport()
         }
         deleteReportButton.setOnClickListener()
@@ -147,7 +144,6 @@ class ReportFragment : Fragment() {
 
     private fun handleNewReport() {
         if (validateData()) {
-//            TODO activate me afte implementing proper imageview display in Report Card
             uploadImage()
             val report =
                 Report("",
@@ -258,8 +254,6 @@ class ReportFragment : Fragment() {
                         if (it.isComplete) {
                             storagePhotoRef = it.result.toString()
                         }
-
-
                     };
                 }
                 .addOnFailureListener { e ->
@@ -272,11 +266,6 @@ class ReportFragment : Fragment() {
                         .totalByteCount
                     progressDialog.setMessage("Uploaded " + progress.toInt() + "%")
                 }
-//            ref.downloadUrl.addOnSuccessListener { uri ->
-//                storagePhotoRef = uri.toString()
-//            }
-
-//            storagePhotoRef = ref.downloadUrl.toString()
         }
     }
 }

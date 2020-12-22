@@ -119,15 +119,12 @@ class TaskFragment : Fragment() {
 
 
     private fun handleDoneToggle() {
-        //FIXME
         if (!chosenTask.doneStatus) {
             chosenTask.doneStatus = true
-
         } else if (chosenTask.doneStatus) {
             chosenTask.doneStatus = false
         }
         dbRef.child(chosenTask.uid).setValue(chosenTask)
-
     }
 
     //TODO implement ifTaskExists logic to prevent duplicate entries
