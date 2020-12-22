@@ -43,7 +43,7 @@ class ReportAdapter(
         holder.date.text = model.date
         holder.photoRef.text = "could not find image in storage"
         if (model.photoRef != "") {
-            holder.photoRef.text = model.photoRef
+            holder.photoRef.text = ""
             storage = FirebaseStorage.getInstance();
             storageReference = storage!!.reference;
             val gsReference = storage!!.getReferenceFromUrl(model.photoRef)
@@ -51,7 +51,6 @@ class ReportAdapter(
             val ONE_MEGABYTE: Long = 1024 * 1024
             gsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener {
                 val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-//                holder.reportCardImagePreview.setImageBitmap(bmp)
                 holder.reportCardImagePreview.setImageBitmap(Bitmap.createScaledBitmap(bmp,
                     holder.reportCardImagePreview.width,
                     holder.reportCardImagePreview.height,
@@ -59,10 +58,6 @@ class ReportAdapter(
             }.addOnFailureListener {
 
             }
-////            val bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath())
-//            val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-//            holder.reportCardImagePreview.setImageBitmap(bmp)
-            //        Glide.with(this@fragment_report).load(model.photoRef).into(holder.reportCardImagePreview);
         }
 
     }
