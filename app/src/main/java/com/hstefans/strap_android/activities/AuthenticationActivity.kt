@@ -22,8 +22,7 @@ class AuthenticationActivity : AppCompatActivity() {
 
     lateinit var email: EditText
     lateinit var password: EditText
-    lateinit var loginButton: Button
-    lateinit var registerRouteButton: Button
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +41,7 @@ class AuthenticationActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.registerRouteButton).setOnClickListener() {
-            val intent1 = Intent(this, registrationActivity::class.java)
+            val intent1 = Intent(this, RegistrationActivity::class.java)
             startActivity(intent1)
         }
 
@@ -53,14 +52,13 @@ class AuthenticationActivity : AppCompatActivity() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser: FirebaseUser? = auth.currentUser
-//        updateUI(currentUser)
     }
 
     /**
      * main login handler
      * @return void
      */
-    private fun authenticateUser() {
+     fun authenticateUser() {
         if (validateData(email.text.toString(), password.text.toString())) {
             auth.signInWithEmailAndPassword(email.text.toString(), password.text.toString())
                 .addOnCompleteListener(this, OnCompleteListener { task ->
@@ -72,42 +70,30 @@ class AuthenticationActivity : AppCompatActivity() {
                     } else {
                         Toast.makeText(
                             this,
-                            "Login Failed, invalid credentials or non-existent user",
+                            "Login Failed",
                             Toast.LENGTH_LONG
                         ).show()
                     }
                 })
+        } else {
+            Toast.makeText(
+                this,
+                "Invalid data filled in or empty fields",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
 
     fun validateData(strEmail: String, strPass: String): Boolean {
         if (strEmail == "" || strPass == "") {
-            val errorToast = Toast.makeText(
-                this@AuthenticationActivity,
-                "Some fields are left empty!",
-                Toast.LENGTH_SHORT
-            )
-            errorToast.show()
             return false
         }
         if (strPass.length < 6) {
-            val errorToast = Toast.makeText(
-                this@AuthenticationActivity,
-                "Password is too short, must be at least 6 characters long!",
-                Toast.LENGTH_SHORT
-            )
-            errorToast.show()
             return false
         }
         val authHandler = AuthHandler()
         if (!authHandler.isValidEmail(strEmail)) {
-            val errorToast = Toast.makeText(
-                this@AuthenticationActivity,
-                "Email is not valid, try again with a valid email",
-                Toast.LENGTH_SHORT
-            )
-            errorToast.show()
             return false
         }
         //TODO implement another check for phone length and validity
