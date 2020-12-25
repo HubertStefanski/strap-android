@@ -2,6 +2,7 @@
 
 package com.hstefans.strap_android.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -22,8 +23,6 @@ class RegistrationActivity : AppCompatActivity() {
     lateinit var password: EditText
     lateinit var confirmPassword: EditText
     lateinit var phoneNo: EditText
-    lateinit var registerButton: Button
-    lateinit var returnButton: Button
     var authHandler: AuthHandler = AuthHandler()
     private lateinit var auth: FirebaseAuth
 
@@ -69,6 +68,13 @@ class RegistrationActivity : AppCompatActivity() {
                         // Sign in success, update UI with the signed-in user's information
                         Log.v(TAG, "createUserWithEmail:success")
                         auth.currentUser
+
+                        Toast.makeText(
+                            this@RegistrationActivity, "User Registered",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent1 = Intent(this, AuthenticationActivity::class.java)
+                        startActivity(intent1)
                     } else {
                         // If sign in fails, display a message to the u-ser.
                         Log.v(TAG, "createUserWithEmail:failure", task.exception)

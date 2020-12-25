@@ -96,7 +96,6 @@ class AuthenticationActivity : AppCompatActivity() {
         if (!authHandler.isValidEmail(strEmail)) {
             return false
         }
-        //TODO implement another check for phone length and validity
         return true
     }
 

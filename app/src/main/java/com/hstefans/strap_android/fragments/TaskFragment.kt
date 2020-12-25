@@ -127,7 +127,6 @@ class TaskFragment : Fragment() {
         dbRef.child(chosenTask.uid).setValue(chosenTask)
     }
 
-    //TODO implement ifTaskExists logic to prevent duplicate entries
     private fun handleNewTask() {
         if (validateData()) {
             val task = Task("",
