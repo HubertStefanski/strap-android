@@ -1,13 +1,12 @@
 # strap-android
 The android version of the Shift Tracking App
 
-## Features (thus far)
-- User registration using email + password backed by Firebase
+## Features
+- User registration using email + password backed by Firebase Authentication
 - User login with email + password backed by Firebase
-- User Navigation menu 
 - Task implementation with Firebase Realtime Database
+- Report implementation with Firebase Realtime Database
+- Per user filtering of data (tasks/reports/waypoints are stored under a certain user UID and are not visible to any other user)
 
 ## Planned and Incoming features
-- Waypoint implementation
-- Report implementation
-- Back end database for the above
+- Extension to waypoint ability (currently has issues and doesn't read location data properly)
