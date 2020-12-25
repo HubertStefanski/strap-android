@@ -32,7 +32,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".activities.registrationActivity" />
+        <activity android:name=".activities.RegistrationActivity" />
         <activity
             android:name=".activities.AuthenticationActivity"
             android:label="@string/title_activity_authentication">
