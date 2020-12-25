@@ -2,21 +2,20 @@
 
 package com.hstefans.strap_android.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.hstefans.strap_android.R
 import com.hstefans.strap_android.handlers.AuthHandler
 
 
-class registrationActivity : AppCompatActivity() {
+class RegistrationActivity : AppCompatActivity() {
     private val TAG = "RegistrationActivty"
 
 
@@ -24,8 +23,6 @@ class registrationActivity : AppCompatActivity() {
     lateinit var password: EditText
     lateinit var confirmPassword: EditText
     lateinit var phoneNo: EditText
-    lateinit var registerButton: Button
-    lateinit var returnButton: Button
     var authHandler: AuthHandler = AuthHandler()
     private lateinit var auth: FirebaseAuth
 
@@ -42,7 +39,6 @@ class registrationActivity : AppCompatActivity() {
         confirmPassword = findViewById<EditText>(R.id.registerConfirmPasswordText)
         phoneNo = findViewById<EditText>(R.id.registerPhoneNoText)
         // Initialize other variables
-//        authHandler = AuthHandler()
 
 
         auth = FirebaseAuth.getInstance()
@@ -58,8 +54,7 @@ class registrationActivity : AppCompatActivity() {
 
     }
 
-    fun handleRegistration() {
-        Log.v(TAG, "${password.text.toString()}, ${confirmPassword.text.toString()}")
+    private fun handleRegistration() {
         if (validateData(
                 email.text.toString(),
                 password.text.toString(),
@@ -72,16 +67,21 @@ class registrationActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.v(TAG, "createUserWithEmail:success")
-                        val user: FirebaseUser? = auth.getCurrentUser()
-//                            SwitchToMainView(user)
+                        auth.currentUser
+
+                        Toast.makeText(
+                            this@RegistrationActivity, "User Registered",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent1 = Intent(this, AuthenticationActivity::class.java)
+                        startActivity(intent1)
                     } else {
                         // If sign in fails, display a message to the u-ser.
                         Log.v(TAG, "createUserWithEmail:failure", task.exception)
                         Toast.makeText(
-                            this@registrationActivity, "registration failed.",
+                            this@RegistrationActivity, "registration failed.",
                             Toast.LENGTH_SHORT
                         ).show()
-//                            updateUI(null)
                     }
                 }
         }
@@ -91,7 +91,7 @@ class registrationActivity : AppCompatActivity() {
     fun validateData(strEmail: String, strPass: String, strConfirmPass: String): Boolean {
         if (strEmail == "" || strPass == "" || strConfirmPass == "") {
             val errorToast = Toast.makeText(
-                this@registrationActivity,
+                this@RegistrationActivity,
                 "Some fields are left empty!",
                 Toast.LENGTH_SHORT
             )
@@ -100,7 +100,7 @@ class registrationActivity : AppCompatActivity() {
         }
         if (strPass.length < 6 || strConfirmPass.length < 6) {
             val errorToast = Toast.makeText(
-                this@registrationActivity,
+                this@RegistrationActivity,
                 "Password is too short, must be at least 6 characters long!",
                 Toast.LENGTH_SHORT
             )
@@ -109,7 +109,7 @@ class registrationActivity : AppCompatActivity() {
         }
         if (strPass != strConfirmPass) {
             val errorToast = Toast.makeText(
-                this@registrationActivity,
+                this@RegistrationActivity,
                 "Passwords do not match!",
                 Toast.LENGTH_SHORT
             )
@@ -118,7 +118,7 @@ class registrationActivity : AppCompatActivity() {
         }
         if (!authHandler.isValidEmail(strEmail)) {
             val errorToast = Toast.makeText(
-                this@registrationActivity,
+                this@RegistrationActivity,
                 "Email is not valid, try again with a valid email",
                 Toast.LENGTH_SHORT
             )
