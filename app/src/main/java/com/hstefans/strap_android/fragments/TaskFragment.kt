@@ -62,7 +62,7 @@ class TaskFragment : Fragment() {
                         chosenTask = adapter!!.getItem(position)
                         newTaskTitle.setText(chosenTask.title)
                         newTaskLocation.setText(chosenTask.location)
-                        newTaskDescription.setText(chosenTask.location)
+                        newTaskDescription.setText(chosenTask.description)
                         updateTaskButton.isEnabled = true
                         deleteTaskButton.isEnabled = true
                         doneTaskButton.isEnabled = true
