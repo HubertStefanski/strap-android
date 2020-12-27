@@ -40,6 +40,7 @@ class UserSettingsFragment : Fragment() {
     }
 
 
+    // sign the current user out and direct the user back to the login screen
     private fun handleLogout() {
         auth = FirebaseAuth.getInstance()
         auth.signOut()

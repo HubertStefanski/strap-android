@@ -24,7 +24,6 @@ class AuthenticationActivity : AppCompatActivity() {
     lateinit var password: EditText
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         auth = FirebaseAuth.getInstance()
         super.onCreate(savedInstanceState)
@@ -53,12 +52,8 @@ class AuthenticationActivity : AppCompatActivity() {
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser: FirebaseUser? = auth.currentUser
     }
-
-    /**
-     * main login handler
-     * @return void
-     */
-     fun authenticateUser() {
+    // check if the user exists, if exists then log in and send notifier to the application about which uid to use for model storage
+    fun authenticateUser() {
         if (validateData(email.text.toString(), password.text.toString())) {
             auth.signInWithEmailAndPassword(email.text.toString(), password.text.toString())
                 .addOnCompleteListener(this, OnCompleteListener { task ->
@@ -84,7 +79,7 @@ class AuthenticationActivity : AppCompatActivity() {
         }
     }
 
-
+    // Ensure the data is valid and not empty
     fun validateData(strEmail: String, strPass: String): Boolean {
         if (strEmail == "" || strPass == "") {
             return false

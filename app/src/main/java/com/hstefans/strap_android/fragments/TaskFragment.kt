@@ -23,6 +23,8 @@ class TaskFragment : Fragment() {
 
 
     private var adapter: TaskAdapter? = null
+
+    // get database reference pointing to the task model for this user
     private val dbRef = FirebaseDatabase.getInstance().getReference("users")
         .child(FirebaseAuth.getInstance().currentUser!!.uid).child("tasks")
 
@@ -36,7 +38,6 @@ class TaskFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var chosenTask: Task
 
-    //    private lateinit var chosenUID: String
     override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,10 +60,12 @@ class TaskFragment : Fragment() {
                 recyclerView,
                 object : RecyclerItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
+                        // get selection and populate fields
                         chosenTask = adapter!!.getItem(position)
                         newTaskTitle.setText(chosenTask.title)
                         newTaskLocation.setText(chosenTask.location)
                         newTaskDescription.setText(chosenTask.description)
+                        // enable buttons once a task has been selected
                         updateTaskButton.isEnabled = true
                         deleteTaskButton.isEnabled = true
                         doneTaskButton.isEnabled = true
@@ -95,7 +98,7 @@ class TaskFragment : Fragment() {
         recyclerView.adapter = adapter
 
 
-        // Disable this button until a task is selected
+        // keeps the delete button disabled until a task has been selected
         deleteTaskButton.isEnabled = false
 
 
@@ -117,7 +120,7 @@ class TaskFragment : Fragment() {
         return view
     }
 
-
+    // switch the status of the task to done/not done
     private fun handleDoneToggle() {
         if (!chosenTask.doneStatus) {
             chosenTask.doneStatus = true
@@ -127,6 +130,7 @@ class TaskFragment : Fragment() {
         dbRef.child(chosenTask.uid).setValue(chosenTask)
     }
 
+    //    create new Task object and push to database under the current user
     private fun handleNewTask() {
         if (validateData()) {
             val task = Task("",
@@ -144,7 +148,7 @@ class TaskFragment : Fragment() {
         clearFields()
     }
 
-
+    //    get updated fields from the fragment and set the new values at the chosen tasks uid
     private fun handleUpdateTask() {
         if (validateData()) {
             val task = Task("",
@@ -175,7 +179,7 @@ class TaskFragment : Fragment() {
         adapter!!.stopListening()
     }
 
-
+    // Input validation for new and updated fields
     private fun validateData(): Boolean {
         if (newTaskTitle.text.toString() == "" ||
             newTaskDescription.text.toString() == "" ||
@@ -192,6 +196,7 @@ class TaskFragment : Fragment() {
         return true
     }
 
+    // reset the fields back to empty after a handler has handled the data
     private fun clearFields() {
         newTaskDescription.setText("")
         newTaskTitle.setText("")

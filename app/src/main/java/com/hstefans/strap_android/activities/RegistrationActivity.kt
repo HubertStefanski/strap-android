@@ -54,6 +54,7 @@ class RegistrationActivity : AppCompatActivity() {
 
     }
 
+//    check data validity and create a new user with Firebase Authentication
     private fun handleRegistration() {
         if (validateData(
                 email.text.toString(),
@@ -76,7 +77,7 @@ class RegistrationActivity : AppCompatActivity() {
                         val intent1 = Intent(this, AuthenticationActivity::class.java)
                         startActivity(intent1)
                     } else {
-                        // If sign in fails, display a message to the u-ser.
+                        // If sign in fails, display a message to the user.
                         Log.v(TAG, "createUserWithEmail:failure", task.exception)
                         Toast.makeText(
                             this@RegistrationActivity, "registration failed.",
@@ -87,7 +88,7 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
-
+// data validation, ensure the user has entered expected types and that the password matches
     fun validateData(strEmail: String, strPass: String, strConfirmPass: String): Boolean {
         if (strEmail == "" || strPass == "" || strConfirmPass == "") {
             val errorToast = Toast.makeText(
@@ -125,7 +126,6 @@ class RegistrationActivity : AppCompatActivity() {
             errorToast.show()
             return false
         }
-        //TODO implement another check for phone length and validity
         return true
     }
 }
