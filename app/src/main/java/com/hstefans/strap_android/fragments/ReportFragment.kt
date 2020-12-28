@@ -1,6 +1,7 @@
 package com.hstefans.strap_android.fragments
 
 import RecyclerItemClickListener
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.ProgressDialog
 import android.content.Intent
@@ -20,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.hstefans.strap_android.R
+import com.hstefans.strap_android.adapters.ReportAdapter
 import com.hstefans.strap_android.models.Report
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -38,14 +40,13 @@ class ReportFragment : Fragment() {
         .child(FirebaseAuth.getInstance().currentUser!!.uid).child("reports")
 
     //Firebase
-    var storage: FirebaseStorage? = null
-    var storageReference: StorageReference? = null
+    private var storage: FirebaseStorage? = null
+    private var storageReference: StorageReference? = null
 
 
-    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-    val currentDate = sdf.format(Date())
-
-    // request code
+    @SuppressLint("SimpleDateFormat")
+    private val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+    private val currentDate: String = sdf.format(Date())
     private lateinit var reportPhotoImageView: ImageView
     private lateinit var newReportLocation: EditText
     private lateinit var newReportDamage: EditText
@@ -58,7 +59,6 @@ class ReportFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var chosenReport: Report
 
-    //    private lateinit var chosenUID: String
     override fun onCreateView(
 
         inflater: LayoutInflater, container: ViewGroup?,
@@ -141,7 +141,7 @@ class ReportFragment : Fragment() {
         return view
     }
 
-
+    // handle report creation, upload image, wait for downloadable URL and proceed to create the model reffering to the uploaded image
     private fun handleNewReport() {
         if (validateData()) {
             uploadImage()
@@ -153,7 +153,7 @@ class ReportFragment : Fragment() {
                     storagePhotoRef
                 )
 
-
+            // set the key as the uid to prevent conflict
             val key = dbRef.child("reports").push().key
             if (key != null) {
                 report.uid = key
@@ -163,7 +163,7 @@ class ReportFragment : Fragment() {
         clearFields()
     }
 
-
+    // read new data from reports, update date and time and push new values to the uid.
     private fun handleUpdateReport() {
         if (validateData()) {
             val report =
@@ -187,14 +187,13 @@ class ReportFragment : Fragment() {
         adapter!!.startListening()
     }
 
-    // Function to tell the app to stop getting
-    // data from database on stoping of the activity
+    // Function to tell the app to stop getting data from the database
     override fun onStop() {
         super.onStop()
         adapter!!.stopListening()
     }
 
-
+    //    data validation function, to be run before updates and create
     private fun validateData(): Boolean {
         if (newReportLocation.text.toString() == "" ||
             newReportDamage.text.toString() == ""
@@ -217,6 +216,7 @@ class ReportFragment : Fragment() {
         reportPhotoImageView.setImageBitmap(null)
     }
 
+    // choose an image from the phones filesystem
     private fun chooseImage() {
         val intent = Intent()
         intent.type = "image/*"
@@ -224,6 +224,7 @@ class ReportFragment : Fragment() {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
 
+    // wait for image and set it as the preview image
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
@@ -238,6 +239,7 @@ class ReportFragment : Fragment() {
         }
     }
 
+    // check if the filepath exists, if it does then start upload and set random uid
     private fun uploadImage() {
         if (filePath != null) {
             val progressDialog = ProgressDialog(this.context)
@@ -250,6 +252,7 @@ class ReportFragment : Fragment() {
                 .addOnSuccessListener {
                     progressDialog.dismiss()
                     Toast.makeText(this.context, "Uploaded", Toast.LENGTH_SHORT).show()
+                    // wait for downloadable link (required for image preview in reportCardHolder)
                     ref.downloadUrl.addOnCompleteListener {
                         if (it.isComplete) {
                             storagePhotoRef = it.result.toString()

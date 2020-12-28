@@ -11,7 +11,7 @@ import com.hstefans.strap_android.R
 val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
-    lateinit var tabLayout: TabLayout
+    private lateinit var tabLayout: TabLayout
     lateinit var viewPager: ViewPager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

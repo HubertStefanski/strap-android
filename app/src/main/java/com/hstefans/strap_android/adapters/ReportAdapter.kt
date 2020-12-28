@@ -1,5 +1,6 @@
-package com.hstefans.strap_android.fragments
+package com.hstefans.strap_android.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -26,10 +27,11 @@ class ReportAdapter(
     private val context: Context? = null
     private val itemListener: RecyclerViewClickListener? = null
     //Firebase
-    var storage: FirebaseStorage? = null
-    var storageReference: StorageReference? = null
+    private var storage: FirebaseStorage? = null
+    private var storageReference: StorageReference? = null
 
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(
         holder: ReportViewholder,
         position: Int, model: Report

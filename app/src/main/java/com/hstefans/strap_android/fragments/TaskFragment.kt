@@ -15,6 +15,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.hstefans.strap_android.R
+import com.hstefans.strap_android.adapters.TaskAdapter
 import com.hstefans.strap_android.models.Task
 
 

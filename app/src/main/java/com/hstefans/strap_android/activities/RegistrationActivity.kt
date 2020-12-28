@@ -19,11 +19,11 @@ class RegistrationActivity : AppCompatActivity() {
     private val TAG = "RegistrationActivty"
 
 
-    lateinit var email: EditText
-    lateinit var password: EditText
-    lateinit var confirmPassword: EditText
-    lateinit var phoneNo: EditText
-    var authHandler: AuthHandler = AuthHandler()
+    private lateinit var email: EditText
+    private lateinit var password: EditText
+    private lateinit var confirmPassword: EditText
+    private lateinit var phoneNo: EditText
+    private var authHandler: AuthHandler = AuthHandler()
     private lateinit var auth: FirebaseAuth
 
 

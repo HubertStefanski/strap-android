@@ -1,6 +1,5 @@
-package com.hstefans.strap_android.fragments
+package com.hstefans.strap_android.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +18,6 @@ import com.hstefans.strap_android.models.Task
 class TaskAdapter(
     options: FirebaseRecyclerOptions<Task>
 ) : FirebaseRecyclerAdapter<Task, TaskAdapter.TaskViewholder>(options) {
-    private val context: Context? = null
-    private val itemListener: RecyclerViewClickListener? = null
 
     override fun onBindViewHolder(
         holder: TaskViewholder,

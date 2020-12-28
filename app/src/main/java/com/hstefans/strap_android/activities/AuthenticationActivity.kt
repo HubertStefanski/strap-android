@@ -20,8 +20,8 @@ class AuthenticationActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
 
-    lateinit var email: EditText
-    lateinit var password: EditText
+    private lateinit var email: EditText
+    private lateinit var password: EditText
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
