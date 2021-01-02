@@ -2,11 +2,23 @@
 The android version of the Shift Tracking App
 
 ## Features
-- User registration using email + password backed by Firebase Authentication
-- User login with email + password backed by Firebase
-- Task implementation with Firebase Realtime Database
-- Report implementation with Firebase Realtime Database
-- Per user filtering of data (tasks/reports/waypoints are stored under a certain user UID and are not visible to any other user)
+- Filtering of reports/tasks per user, each report/task is assigned under the UID of the user.
+- Image chooser and upload
+- Linked references of reports and respective attached photos
 
-## Planned and Incoming features
-- Extension to waypoint ability (currently has issues and doesn't read location data properly)
+### User registration using email + password backed by Firebase Authentication
+![user registration](./documentation/imgs/registration.png)
+
+### User login with email + password backed by Firebase
+![user authentication](./documentation/imgs/auth.png)
+
+### Task implementation with Firebase Realtime Database
+![tasks](./documentation/imgs/task.png)
+
+### Report implementation with Firebase Realtime Database
+![reports](./documentation/imgs/report.png)
+
+## Planned features
+- Extension to waypoints (currently doesn't read location data)
+### Current waypoint implementation
+![waypoint](./documentation/imgs/waypoint.png)
